@@ -22,18 +22,18 @@ def Key(Key):
     M = int(datetime.datetime.now().month)
     D = int(datetime.datetime.now().day)
     if key == "8ae7778c9ae86d2ded133e891995dc9e":
-        allowATime = datetime.datetime(2018, 12, 26, 1, 10, 10)  # ÔÊĞíÊ¹ÓÃ
+        allowATime = datetime.datetime(2018, 12, 26, 1, 10, 10)  # å…è®¸ä½¿ç”¨
         allowBTime = datetime.datetime(2018, 12, 27, 1, 10, 10)
         if datetime.datetime.now() > allowATime and datetime.datetime.now() < allowBTime:
             pass
         else:
-            print("²»ÔÚÃÜ³×¿ÉÓÃÊ±¶Î£¡")
-            Key(input("ÇëÊäÈëÃÜ³×: "))
+            print("ä¸åœ¨å¯†åŒ™å¯ç”¨æ—¶æ®µï¼")
+            Key(input("è¯·è¾“å…¥å¯†åŒ™: "))
     else:
         if key != "7ae7778c9ae86d2ded133e891995dc9e":
             if key != "36963":
-                print("´íÎó£¡")
-                Key(input("ÇëÊäÈëÃÜ³×: "))
+                print("é”™è¯¯ï¼")
+                Key(input("è¯·è¾“å…¥å¯†åŒ™: "))
 
 def Login(studentnumber,password,ip,codeReco = True):
     req = requests.session()
@@ -45,19 +45,19 @@ def Login(studentnumber,password,ip,codeReco = True):
     imgresponse = req.get(imgUrl, stream=True)
     image = imgresponse.content
     DstDir = os.getcwd() + "\\"
-    print("±£´æÑéÖ¤Âë", DstDir + "code.jpg")
+    print("ä¿å­˜éªŒè¯ç ", DstDir + "code.jpg")
     try:
         with open(DstDir + "code.jpg", "wb") as jpg:
             jpg.write(image)
     except IOError:
         print("IO Error\n")
-    print("Ê¶±ğÖĞ...")
+    print("è¯†åˆ«ä¸­...")
     if codeReco:
         code = TestFunc("code.jpg")
-        print("½á¹û",code)
+        print("ç»“æœ",code)
 
     else:
-        code = input("ÊÖ¶¯ÊäÈëÑéÖ¤Âë: ")
+        code = input("æ‰‹åŠ¨è¾“å…¥éªŒè¯ç : ")
     os.remove("code.jpg")
     postdata = {
         "__VIEWSTATE": __VIEWSTATE,
@@ -71,22 +71,22 @@ def Login(studentnumber,password,ip,codeReco = True):
     Dsoup = BeautifulSoup(res.content,"html.parser")
     nameTag = Dsoup.find("span",id="xhxm")
     if nameTag:
-        name = nameTag.get_text().replace("Í¬Ñ§","")
+        name = nameTag.get_text().replace("åŒå­¦","")
     else:
-        print("Ê¶±ğÊ§°Ü...")
+        print("è¯†åˆ«å¤±è´¥...")
         return Login(studentnumber,password,ip,codeReco = False)
-    print ("µÇÂ¼×´Ì¬Âë",res.status_code)
-    print ("È·ÈÏĞÕÃû--> ",name)
+    print ("ç™»å½•çŠ¶æ€ç ",res.status_code)
+    print ("ç¡®è®¤å§“å--> ",name)
     if(res.status_code!=200):
-        print ("µÇÂ¼Ê§°Ü,ÍË³ö")
+        print ("ç™»å½•å¤±è´¥,é€€å‡º")
         return "logerr"
     return [req,name]
 
 
-def CrawlCourse(req,name,studentnumber,ip,totalPageNum): # Ñ¡¿Î
-    print ("ÕıÔÚ×¼±¸¿Î³ÌĞòÁĞ...")
+def CrawlCourse(req,name,studentnumber,ip,totalPageNum): # é€‰è¯¾
+    print ("æ­£åœ¨å‡†å¤‡è¯¾ç¨‹åºåˆ—...")
 
-    # µã»÷Ñ§ÉúÑ¡¿Î
+    # ç‚¹å‡»å­¦ç”Ÿé€‰è¯¾
     # url = "http://10.10.240.26/xsxk.aspx?xh=%s&xm=%s&gnmkdm=N121101"%(studentnumber,str(name))
     url = "http://10.10.240.%s/xsxk.aspx?xh=%s&gnmkdm=N121101"%(ip,studentnumber)
 
@@ -99,23 +99,23 @@ def CrawlCourse(req,name,studentnumber,ip,totalPageNum): # Ñ¡¿Î
     zymc = re.findall(zymc, str(res.content))[0]
 
 
-    # µã»÷Ñ¡ĞŞ¿Î³Ì
+    # ç‚¹å‡»é€‰ä¿®è¯¾ç¨‹
     postdata = {
         "__VIEWSTATE": value,
         "zymc":zymc,
-        "Button2":"Ñ¡ĞŞ¿Î³Ì",
+        "Button2":"é€‰ä¿®è¯¾ç¨‹",
     }
     req.headers['Referer'] = url
     res = req.post(url, data=postdata)
     value = re.compile("<input type=\"hidden\" name=\"__VIEWSTATE\" value=\"(.*?)\" />")
     value = re.findall(value, str(res.content))[0]
-    # µã»÷Ñ¡ĞŞ¿Î³Ì
+    # ç‚¹å‡»é€‰ä¿®è¯¾ç¨‹
     postdata = {
         "__VIEWSTATE": value,
-        "Button7": "¿ìËÙÑ¡¿Î",
+        "Button7": "å¿«é€Ÿé€‰è¯¾",
     }
     waitClas = []
-    # µã»÷¿ìËÙÑ¡¿Î
+    # ç‚¹å‡»å¿«é€Ÿé€‰è¯¾
     res = req.post(url, data=postdata)
     soup = BeautifulSoup(res.content, 'html.parser')
     Td = soup.find_all("a",href="#")
@@ -144,7 +144,7 @@ def CrawlCourse(req,name,studentnumber,ip,totalPageNum): # Ñ¡¿Î
 
     value = re.compile("<input type=\"hidden\" name=\"__VIEWSTATE\" value=\"(.*?)\" />")
     value = re.findall(value, str(res.content))[0]
-    print ("¹²:"+str(len(Page)+1)+"Ò³")
+    print ("å…±:"+str(len(Page)+1)+"é¡µ")
 
     for page in Page:
         # print(page)
@@ -163,7 +163,7 @@ def CrawlCourse(req,name,studentnumber,ip,totalPageNum): # Ñ¡¿Î
     Url = []
     for ind in range(0,len(waitClas)):
         print ("---------------------------------")
-        print ("ĞòÁĞºÅ:"+str(ind+1)+" ¿Î³Ì:"+str(waitClas[ind].get_text()))
+        print ("åºåˆ—å·:"+str(ind+1)+" è¯¾ç¨‹:"+str(waitClas[ind].get_text()))
         Link = re.compile("window.open\(\'(.*?)\',")
         link = re.findall(Link,str(waitClas[ind]['onclick']))[0]
         url = "http://10.10.240."+ip+"/"+ link
@@ -172,7 +172,7 @@ def CrawlCourse(req,name,studentnumber,ip,totalPageNum): # Ñ¡¿Î
     return Url
 
 def CrawlSportsCourse(req,name,studentnumber,ip):
-    print("ÕıÔÚ²É¼¯¿ÉÑ¡Ê±¼ä...")
+    print("æ­£åœ¨é‡‡é›†å¯é€‰æ—¶é—´...")
     url = "http://10.10.240.%s/xf_xstyxk.aspx?xh=%s&gnmkdm=N121102"%(ip,studentnumber)
     req.headers['Referer'] = "http://10.10.240.%s/xs_main.aspx?xh=%s"%(ip,studentnumber)
     res = req.get(url)
@@ -183,12 +183,12 @@ def CrawlSportsCourse(req,name,studentnumber,ip):
     i = 0
     for option in Option:
         i+=1
-        print("ĞòÁĞºÅ: "+str(i)+"."+option["value"])
-    num = input("ÊäÈëÊ±¼äĞòÁĞºÅ:")
+        print("åºåˆ—å·: "+str(i)+"."+option["value"])
+    num = input("è¾“å…¥æ—¶é—´åºåˆ—å·:")
     option = Option[int(num) - 1]
-    print("Ñ¡Ôñ" + option['value'])
-    print("ÕıÔÚ×¼±¸ÌåÓı¿ÎÁĞ±í...")
-    # Ä£Äâµã»÷Ê±¼äÑ¡Ïî
+    print("é€‰æ‹©" + option['value'])
+    print("æ­£åœ¨å‡†å¤‡ä½“è‚²è¯¾åˆ—è¡¨...")
+    # æ¨¡æ‹Ÿç‚¹å‡»æ—¶é—´é€‰é¡¹
     postdata = {
         "__EVENTTARGET":"kg",
         "__VIEWSTATE":value,
@@ -203,20 +203,20 @@ def CrawlSportsCourse(req,name,studentnumber,ip):
     Td = soup.find_all("a", href="#")
     for i in range(0,int(len(Td)/2)):
         print("-----------------------------------")
-        print("ĞòÁĞºÅ: "+str(i+1)+"."+str(Td[2*i].get_text()+"---"+Td[2*i+1].get_text()))
+        print("åºåˆ—å·: "+str(i+1)+"."+str(Td[2*i].get_text()+"---"+Td[2*i+1].get_text()))
     print("-----------------------------------")
-    num = int(input("Ñ¡Ôñ:"))
+    num = int(input("é€‰æ‹©:"))
     postdata = {
         "__VIEWSTATE":value,
         "kj":option['value'],
-        "Button1": " Ìá ½» ",
+        "Button1": " æ äº¤ ",
         "kcmcGrid:_ctl%s:xk"%str(num+1):"on",
     }
     Y = int(datetime.datetime.now().year)
     M = int(datetime.datetime.now().month)
     D = int(datetime.datetime.now().day)
-    startTime = datetime.datetime(Y, M, D, 12, 58, 40)  # ÊäÈëÆô¶¯Ê±¼ä
-    print(str(startTime) + "½«Ö´ĞĞÑ¡¿Î²Ù×÷")
+    startTime = datetime.datetime(Y, M, D, 12, 58, 40)  # è¾“å…¥å¯åŠ¨æ—¶é—´
+    print(str(startTime) + "å°†æ‰§è¡Œé€‰è¯¾æ“ä½œ")
     while datetime.datetime.now() < startTime:
         time.sleep(0.5)
     print('Action now starts on %s' % startTime)
@@ -225,16 +225,16 @@ def CrawlSportsCourse(req,name,studentnumber,ip):
             res = req.post(url, data=postdata, timeout=1)
             html = str(res.content, "utf-8")
         except:
-            print("Á´½Ó³¬Ê±,ÖØĞÂÇëÇó")
-        if html.count("³É¹¦") != 0:
-            print("±£´æ³É¹¦£¡£¡£¡")
-            print("±£´æ³É¹¦£¡£¡£¡")
-            print("±£´æ³É¹¦£¡£¡£¡")
+            print("é“¾æ¥è¶…æ—¶,é‡æ–°è¯·æ±‚")
+        if html.count("æˆåŠŸ") != 0:
+            print("ä¿å­˜æˆåŠŸï¼ï¼ï¼")
+            print("ä¿å­˜æˆåŠŸï¼ï¼ï¼")
+            print("ä¿å­˜æˆåŠŸï¼ï¼ï¼")
             break
-        elif html.count("Ñ¡¿ÎÊ±¼ä") != 0:
-            print("ÏµÍ³ÌáÊ¾Ê±¼äÎ´µ½,ÔÙ´ÎÇëÇó£¡")
-        elif html.count("ÏŞÖÆ") != 0:
-            print("ÈËÊı³¬¹ıÏŞÖÆ,Ê§°Ü~")
+        elif html.count("é€‰è¯¾æ—¶é—´") != 0:
+            print("ç³»ç»Ÿæç¤ºæ—¶é—´æœªåˆ°,å†æ¬¡è¯·æ±‚ï¼")
+        elif html.count("é™åˆ¶") != 0:
+            print("äººæ•°è¶…è¿‡é™åˆ¶,å¤±è´¥~")
             break
 
 def CrawlPage(req,name,studentnumber,postdata,ip):
@@ -246,20 +246,20 @@ def CrawlPage(req,name,studentnumber,postdata,ip):
     Td = soup.find_all("a", href="#")
     return [value,Td]
 
-# ×¼±¸²ÎÊı
+# å‡†å¤‡å‚æ•°
 def PreparaParam(req,url):
-    print("\n3Ãëºó²Ù×÷")
+    print("\n3ç§’åæ“ä½œ")
     time.sleep(3)
     req.headers['Referer'] = url
     res = req.get(url)
     html = str((res.content), "utf-8")
-    if "ÈıÃë·ÀË¢" in html:
+    if "ä¸‰ç§’é˜²åˆ·" in html:
         return "s"
-    classNameSearch = re.compile("¿Î³ÌÃû³Æ£º(.*?)Ñ§·Ö").findall(html)
+    classNameSearch = re.compile("è¯¾ç¨‹åç§°ï¼š(.*?)å­¦åˆ†").findall(html)
     className = ""
     if len(classNameSearch)!=0:
         className = classNameSearch[0].replace("&nbsp;","")
-    print("ÊäÈë "+className+" µÄ´ıÑ¡Ê±¼äĞòÁĞºÅ")
+    print("è¾“å…¥ "+className+" çš„å¾…é€‰æ—¶é—´åºåˆ—å·")
     Xkkh = re.compile('value="(.*?)" name=xkkh')
     Xkkh = re.findall(Xkkh, html)
     Teacher = []
@@ -280,21 +280,21 @@ def PreparaParam(req,url):
     for xkkh in Xkkh:
         j += 1
         try:
-            print("ĞòÁĞºÅ: " + str(j) + "." + str(Teacher[j - 1]))
+            print("åºåˆ—å·: " + str(j) + "." + str(Teacher[j - 1]))
         except:
-            print("ĞòÁĞºÅ: " + str(j) + "±àÂëÎÊÌâÎŞ·¨ÏÔÊ¾")
+            print("åºåˆ—å·: " + str(j) + "ç¼–ç é—®é¢˜æ— æ³•æ˜¾ç¤º")
         Axkkh.append(xkkh)
-    num = int(input("ĞòÁĞºÅ:"))
+    num = int(input("åºåˆ—å·:"))
     return num
 
-# Ö´ĞĞÑ¡¿Î
+# æ‰§è¡Œé€‰è¯¾
 def ExecutePost(req,url,num):
     req.headers['Referer'] = url
     res = req.get(url)
     html = str((res.content),"utf-8")
-    if "ÈıÃë·ÀË¢" in html:
-        print("ÈıÃë·ÀË¢...")
-    classNameSearch = re.compile("¿Î³ÌÃû³Æ£º(.*?)Ñ§·Ö").findall(html)
+    if "ä¸‰ç§’é˜²åˆ·" in html:
+        print("ä¸‰ç§’é˜²åˆ·...")
+    classNameSearch = re.compile("è¯¾ç¨‹åç§°ï¼š(.*?)å­¦åˆ†").findall(html)
     className = ""
     if len(classNameSearch) != 0:
         className = classNameSearch[0].replace("&nbsp;", "")
@@ -328,34 +328,34 @@ def ExecutePost(req,url,num):
     }
     M = int(datetime.datetime.now().month)
     D = int(datetime.datetime.now().day)
-    startTime = datetime.datetime(2018, M, D, 12, 58, 50)  # Æô¶¯Ê±¼ä
-    print(className+" Ñ¡¿Î²ÎÊı×¼±¸Íê³É!",str(startTime)+"½«Ö´ĞĞÑ¡¿Î²Ù×÷")
+    startTime = datetime.datetime(2018, M, D, 12, 58, 50)  # å¯åŠ¨æ—¶é—´
+    print(className+" é€‰è¯¾å‚æ•°å‡†å¤‡å®Œæˆ!",str(startTime)+"å°†æ‰§è¡Œé€‰è¯¾æ“ä½œ")
 
     while datetime.datetime.now() < startTime:
         time.sleep(0.5)
 
-    print(className ,'Ïß³ÌÆô¶¯ %s' % datetime.datetime.now())
+    print(className ,'çº¿ç¨‹å¯åŠ¨ %s' % datetime.datetime.now())
 
     while(1):
         try:
             res = req.post(url,data=postdata,timeout=1)
             html = str(res.content,"utf-8")
         except:
-            print("Á´½Ó³¬Ê±,ÖØĞÂÇëÇó")
+            print("é“¾æ¥è¶…æ—¶,é‡æ–°è¯·æ±‚")
             pass
-        if html.count("³É¹¦") != 0:
-            print(className ,"Ñ¡¿Î³É¹¦£¡£¡£¡")
-            print(className ,"Ñ¡¿Î³É¹¦£¡£¡£¡")
-            print(className ,"Ñ¡¿Î³É¹¦£¡£¡£¡\n")
+        if html.count("æˆåŠŸ") != 0:
+            print(className ,"é€‰è¯¾æˆåŠŸï¼ï¼ï¼")
+            print(className ,"é€‰è¯¾æˆåŠŸï¼ï¼ï¼")
+            print(className ,"é€‰è¯¾æˆåŠŸï¼ï¼ï¼\n")
             break
-        elif html.count("Ñ¡¿ÎÊ±¼ä")!=0:
-            print (className ,"ÏµÍ³ÌáÊ¾Ê±¼äÎ´µ½,ÔÙ´ÎÇëÇó£¡\n")
-        elif html.count("ÏŞÖÆ")!=0:
-            print (className ,"ÈËÊı³¬¹ıÏŞÖÆ,Ê§°Ü~\n")
+        elif html.count("é€‰è¯¾æ—¶é—´")!=0:
+            print (className ,"ç³»ç»Ÿæç¤ºæ—¶é—´æœªåˆ°,å†æ¬¡è¯·æ±‚ï¼\n")
+        elif html.count("é™åˆ¶")!=0:
+            print (className ,"äººæ•°è¶…è¿‡é™åˆ¶,å¤±è´¥~\n")
             break
 
 def SaveClass(req,name,studentnumber,ip):
-    # ´òÓ¡¿Î±í
+    # æ‰“å°è¯¾è¡¨
 
     url = "http://10.10.240.%s/xskb.aspx?xh=%s&xhxx=%s2017-20182"%(ip,studentnumber,studentnumber)
     req.headers['Referer'] = "http://10.10.240.%s/xs_main.aspx?xh=%s"%(ip,studentnumber)
@@ -378,7 +378,7 @@ def SaveClass(req,name,studentnumber,ip):
 FATEA_PRED_URL  = "http://pred.fateadm.com"
 
 def LOG(log):
-    # ²»ĞèÒª²âÊÔÊ±£¬×¢ÊÍµôÈÕÖ¾¾Í¿ÉÒÔÁË
+    # ä¸éœ€è¦æµ‹è¯•æ—¶ï¼Œæ³¨é‡Šæ‰æ—¥å¿—å°±å¯ä»¥äº†
     # print(log)
     log = None
 
@@ -441,8 +441,8 @@ def HttpRequest(url, body_data, img_data=""):
     return rsp
 
 class FateadmApi():
-    # API½Ó¿Úµ÷ÓÃÀà
-    # ²ÎÊı£¨appID£¬appKey£¬pdID£¬pdKey£©
+    # APIæ¥å£è°ƒç”¨ç±»
+    # å‚æ•°ï¼ˆappIDï¼ŒappKeyï¼ŒpdIDï¼ŒpdKeyï¼‰
     def __init__(self, app_id, app_key, pd_id, pd_key):
         self.app_id     = app_id
         if app_id is None:
@@ -456,12 +456,12 @@ class FateadmApi():
         self.host       = url
 
     #
-    # ²éÑ¯Óà¶î
-    # ²ÎÊı£ºÎŞ
-    # ·µ»ØÖµ£º
-    #   rsp.ret_code£ºÕı³£·µ»Ø0
-    #   rsp.cust_val£ºÓÃ»§Óà¶î
-    #   rsp.err_msg£ºÒì³£Ê±·µ»ØÒì³£ÏêÇé
+    # æŸ¥è¯¢ä½™é¢
+    # å‚æ•°ï¼šæ— 
+    # è¿”å›å€¼ï¼š
+    #   rsp.ret_codeï¼šæ­£å¸¸è¿”å›0
+    #   rsp.cust_valï¼šç”¨æˆ·ä½™é¢
+    #   rsp.err_msgï¼šå¼‚å¸¸æ—¶è¿”å›å¼‚å¸¸è¯¦æƒ…
     #
     def QueryBalc(self):
         tm      = str( int(time.time()))
@@ -480,11 +480,11 @@ class FateadmApi():
         return rsp
 
     #
-    # ²éÑ¯ÍøÂçÑÓ³Ù
-    # ²ÎÊı£ºpred_type:Ê¶±ğÀàĞÍ
-    # ·µ»ØÖµ£º
-    #   rsp.ret_code£ºÕı³£·µ»Ø0
-    #   rsp.err_msg£º Òì³£Ê±·µ»ØÒì³£ÏêÇé
+    # æŸ¥è¯¢ç½‘ç»œå»¶è¿Ÿ
+    # å‚æ•°ï¼špred_type:è¯†åˆ«ç±»å‹
+    # è¿”å›å€¼ï¼š
+    #   rsp.ret_codeï¼šæ­£å¸¸è¿”å›0
+    #   rsp.err_msgï¼š å¼‚å¸¸æ—¶è¿”å›å¼‚å¸¸è¯¦æƒ…
     #
     def QueryTTS(self, pred_type):
         tm          = str( int(time.time()))
@@ -509,13 +509,13 @@ class FateadmApi():
         return rsp
 
     #
-    # Ê¶±ğÑéÖ¤Âë
-    # ²ÎÊı£ºpred_type:Ê¶±ğÀàĞÍ  img_data:Í¼Æ¬µÄÊı¾İ
-    # ·µ»ØÖµ£º
-    #   rsp.ret_code£ºÕı³£·µ»Ø0
-    #   rsp.request_id£ºÎ¨Ò»¶©µ¥ºÅ
-    #   rsp.pred_rsp.value£ºÊ¶±ğ½á¹û
-    #   rsp.err_msg£ºÒì³£Ê±·µ»ØÒì³£ÏêÇé
+    # è¯†åˆ«éªŒè¯ç 
+    # å‚æ•°ï¼špred_type:è¯†åˆ«ç±»å‹  img_data:å›¾ç‰‡çš„æ•°æ®
+    # è¿”å›å€¼ï¼š
+    #   rsp.ret_codeï¼šæ­£å¸¸è¿”å›0
+    #   rsp.request_idï¼šå”¯ä¸€è®¢å•å·
+    #   rsp.pred_rsp.valueï¼šè¯†åˆ«ç»“æœ
+    #   rsp.err_msgï¼šå¼‚å¸¸æ—¶è¿”å›å¼‚å¸¸è¯¦æƒ…
     #
     def Predict(self, pred_type, img_data, head_info = ""):
         tm          = str( int(time.time()))
@@ -547,13 +547,13 @@ class FateadmApi():
         return rsp
 
     #
-    # ´ÓÎÄ¼ş½øĞĞÑéÖ¤ÂëÊ¶±ğ
-    # ²ÎÊı£ºpred_type;Ê¶±ğÀàĞÍ  file_name:ÎÄ¼şÃû
-    # ·µ»ØÖµ£º
-    #   rsp.ret_code£ºÕı³£·µ»Ø0
-    #   rsp.request_id£ºÎ¨Ò»¶©µ¥ºÅ
-    #   rsp.pred_rsp.value£ºÊ¶±ğ½á¹û
-    #   rsp.err_msg£ºÒì³£Ê±·µ»ØÒì³£ÏêÇé
+    # ä»æ–‡ä»¶è¿›è¡ŒéªŒè¯ç è¯†åˆ«
+    # å‚æ•°ï¼špred_type;è¯†åˆ«ç±»å‹  file_name:æ–‡ä»¶å
+    # è¿”å›å€¼ï¼š
+    #   rsp.ret_codeï¼šæ­£å¸¸è¿”å›0
+    #   rsp.request_idï¼šå”¯ä¸€è®¢å•å·
+    #   rsp.pred_rsp.valueï¼šè¯†åˆ«ç»“æœ
+    #   rsp.err_msgï¼šå¼‚å¸¸æ—¶è¿”å›å¼‚å¸¸è¯¦æƒ…
     #
     def PredictFromFile( self, pred_type, file_name, head_info = ""):
         with open(file_name, "rb") as f:
@@ -561,16 +561,16 @@ class FateadmApi():
         return self.Predict(pred_type,data,head_info=head_info)
 
     #
-    # Ê¶±ğÊ§°Ü£¬½øĞĞÍË¿îÇëÇó
-    # ²ÎÊı£ºrequest_id£ºĞèÒªÍË¿îµÄ¶©µ¥ºÅ
-    # ·µ»ØÖµ£º
-    #   rsp.ret_code£ºÕı³£·µ»Ø0
-    #   rsp.err_msg£ºÒì³£Ê±·µ»ØÒì³£ÏêÇé
+    # è¯†åˆ«å¤±è´¥ï¼Œè¿›è¡Œé€€æ¬¾è¯·æ±‚
+    # å‚æ•°ï¼šrequest_idï¼šéœ€è¦é€€æ¬¾çš„è®¢å•å·
+    # è¿”å›å€¼ï¼š
+    #   rsp.ret_codeï¼šæ­£å¸¸è¿”å›0
+    #   rsp.err_msgï¼šå¼‚å¸¸æ—¶è¿”å›å¼‚å¸¸è¯¦æƒ…
     #
-    # ×¢Òâ:
-    #    PredictÊ¶±ğ½Ó¿Ú£¬½öÔÚret_code == 0Ê±²Å»á½øĞĞ¿Û¿î£¬²ÅĞèÒª½øĞĞÍË¿îÇëÇó£¬·ñÔòÎŞĞè½øĞĞÍË¿î²Ù×÷
-    # ×¢Òâ2:
-    #   ÍË¿î½öÔÚÕı³£Ê¶±ğ³ö½á¹ûºó£¬ÎŞ·¨Í¨¹ıÍøÕ¾ÑéÖ¤µÄÇé¿ö£¬ÇëÎğ·Ç·¨»òÕßÀÄÓÃ£¬·ñÔò¿ÉÄÜ½øĞĞ·âºÅ´¦Àí
+    # æ³¨æ„:
+    #    Predictè¯†åˆ«æ¥å£ï¼Œä»…åœ¨ret_code == 0æ—¶æ‰ä¼šè¿›è¡Œæ‰£æ¬¾ï¼Œæ‰éœ€è¦è¿›è¡Œé€€æ¬¾è¯·æ±‚ï¼Œå¦åˆ™æ— éœ€è¿›è¡Œé€€æ¬¾æ“ä½œ
+    # æ³¨æ„2:
+    #   é€€æ¬¾ä»…åœ¨æ­£å¸¸è¯†åˆ«å‡ºç»“æœåï¼Œæ— æ³•é€šè¿‡ç½‘ç«™éªŒè¯çš„æƒ…å†µï¼Œè¯·å‹¿éæ³•æˆ–è€…æ»¥ç”¨ï¼Œå¦åˆ™å¯èƒ½è¿›è¡Œå°å·å¤„ç†
     #
     def Justice(self, request_id):
         if request_id == "":
@@ -593,11 +593,11 @@ class FateadmApi():
         return rsp
 
     #
-    # ³äÖµ½Ó¿Ú
-    # ²ÎÊı£ºcardid£º³äÖµ¿¨ºÅ  cardkey£º³äÖµ¿¨Ç©Ãû´®
-    # ·µ»ØÖµ£º
-    #   rsp.ret_code£ºÕı³£·µ»Ø0
-    #   rsp.err_msg£ºÒì³£Ê±·µ»ØÒì³£ÏêÇé
+    # å……å€¼æ¥å£
+    # å‚æ•°ï¼šcardidï¼šå……å€¼å¡å·  cardkeyï¼šå……å€¼å¡ç­¾åä¸²
+    # è¿”å›å€¼ï¼š
+    #   rsp.ret_codeï¼šæ­£å¸¸è¿”å›0
+    #   rsp.err_msgï¼šå¼‚å¸¸æ—¶è¿”å›å¼‚å¸¸è¯¦æƒ…
     #
     def Charge(self, cardid, cardkey):
         tm          = str( int(time.time()))
@@ -619,48 +619,48 @@ class FateadmApi():
         return rsp
 
     ##
-    # ³äÖµ£¬Ö»·µ»ØÊÇ·ñ³É¹¦
-    # ²ÎÊı£ºcardid£º³äÖµ¿¨ºÅ  cardkey£º³äÖµ¿¨Ç©Ãû´®
-    # ·µ»ØÖµ£º ³äÖµ³É¹¦Ê±·µ»Ø0
+    # å……å€¼ï¼Œåªè¿”å›æ˜¯å¦æˆåŠŸ
+    # å‚æ•°ï¼šcardidï¼šå……å€¼å¡å·  cardkeyï¼šå……å€¼å¡ç­¾åä¸²
+    # è¿”å›å€¼ï¼š å……å€¼æˆåŠŸæ—¶è¿”å›0
     ##
     def ExtendCharge(self, cardid, cardkey):
         return self.Charge(cardid,cardkey).ret_code
 
     ##
-    # µ÷ÓÃÍË¿î£¬Ö»·µ»ØÊÇ·ñ³É¹¦
-    # ²ÎÊı£º request_id£ºĞèÒªÍË¿îµÄ¶©µ¥ºÅ
-    # ·µ»ØÖµ£º ÍË¿î³É¹¦Ê±·µ»Ø0
+    # è°ƒç”¨é€€æ¬¾ï¼Œåªè¿”å›æ˜¯å¦æˆåŠŸ
+    # å‚æ•°ï¼š request_idï¼šéœ€è¦é€€æ¬¾çš„è®¢å•å·
+    # è¿”å›å€¼ï¼š é€€æ¬¾æˆåŠŸæ—¶è¿”å›0
     #
-    # ×¢Òâ:
-    #    PredictÊ¶±ğ½Ó¿Ú£¬½öÔÚret_code == 0Ê±²Å»á½øĞĞ¿Û¿î£¬²ÅĞèÒª½øĞĞÍË¿îÇëÇó£¬·ñÔòÎŞĞè½øĞĞÍË¿î²Ù×÷
-    # ×¢Òâ2:
-    #   ÍË¿î½öÔÚÕı³£Ê¶±ğ³ö½á¹ûºó£¬ÎŞ·¨Í¨¹ıÍøÕ¾ÑéÖ¤µÄÇé¿ö£¬ÇëÎğ·Ç·¨»òÕßÀÄÓÃ£¬·ñÔò¿ÉÄÜ½øĞĞ·âºÅ´¦Àí
+    # æ³¨æ„:
+    #    Predictè¯†åˆ«æ¥å£ï¼Œä»…åœ¨ret_code == 0æ—¶æ‰ä¼šè¿›è¡Œæ‰£æ¬¾ï¼Œæ‰éœ€è¦è¿›è¡Œé€€æ¬¾è¯·æ±‚ï¼Œå¦åˆ™æ— éœ€è¿›è¡Œé€€æ¬¾æ“ä½œ
+    # æ³¨æ„2:
+    #   é€€æ¬¾ä»…åœ¨æ­£å¸¸è¯†åˆ«å‡ºç»“æœåï¼Œæ— æ³•é€šè¿‡ç½‘ç«™éªŒè¯çš„æƒ…å†µï¼Œè¯·å‹¿éæ³•æˆ–è€…æ»¥ç”¨ï¼Œå¦åˆ™å¯èƒ½è¿›è¡Œå°å·å¤„ç†
     ##
     def JusticeExtend(self, request_id):
         return self.Justice(request_id).ret_code
 
     ##
-    # ²éÑ¯Óà¶î£¬Ö»·µ»ØÓà¶î
-    # ²ÎÊı£ºÎŞ
-    # ·µ»ØÖµ£ºrsp.cust_val£ºÓà¶î
+    # æŸ¥è¯¢ä½™é¢ï¼Œåªè¿”å›ä½™é¢
+    # å‚æ•°ï¼šæ— 
+    # è¿”å›å€¼ï¼šrsp.cust_valï¼šä½™é¢
     ##
     def QueryBalcExtend(self):
         rsp = self.QueryBalc()
         return rsp.cust_val
 
     ##
-    # ´ÓÎÄ¼şÊ¶±ğÑéÖ¤Âë£¬Ö»·µ»ØÊ¶±ğ½á¹û
-    # ²ÎÊı£ºpred_type;Ê¶±ğÀàĞÍ  file_name:ÎÄ¼şÃû
-    # ·µ»ØÖµ£º rsp.pred_rsp.value£ºÊ¶±ğµÄ½á¹û
+    # ä»æ–‡ä»¶è¯†åˆ«éªŒè¯ç ï¼Œåªè¿”å›è¯†åˆ«ç»“æœ
+    # å‚æ•°ï¼špred_type;è¯†åˆ«ç±»å‹  file_name:æ–‡ä»¶å
+    # è¿”å›å€¼ï¼š rsp.pred_rsp.valueï¼šè¯†åˆ«çš„ç»“æœ
     ##
     def PredictFromFileExtend( self, pred_type, file_name, head_info = ""):
         rsp = self.PredictFromFile(pred_type,file_name,head_info)
         return rsp.pred_rsp.value
 
     ##
-    # Ê¶±ğ½Ó¿Ú£¬Ö»·µ»ØÊ¶±ğ½á¹û
-    # ²ÎÊı£ºpred_type:Ê¶±ğÀàĞÍ  img_data:Í¼Æ¬µÄÊı¾İ
-    # ·µ»ØÖµ£º rsp.pred_rsp.value£ºÊ¶±ğµÄ½á¹û
+    # è¯†åˆ«æ¥å£ï¼Œåªè¿”å›è¯†åˆ«ç»“æœ
+    # å‚æ•°ï¼špred_type:è¯†åˆ«ç±»å‹  img_data:å›¾ç‰‡çš„æ•°æ®
+    # è¿”å›å€¼ï¼š rsp.pred_rsp.valueï¼šè¯†åˆ«çš„ç»“æœ
     ##
     def PredictExtend(self,pred_type, img_data, head_info = ""):
         rsp = self.Predict(pred_type,img_data,head_info)
@@ -669,35 +669,35 @@ class FateadmApi():
 
 
 def TestFunc(path):
-    pd_id           = "103604"     #ÓÃ»§ÖĞĞÄÒ³¿ÉÒÔ²éÑ¯µ½pdĞÅÏ¢
-    pd_key          = "/Zea0wnIFe/cIivYNVpu4yjc+p/xEgk9"
-    app_id          = "100001"     #¿ª·¢Õß·Ö³ÉÓÃµÄÕËºÅ£¬ÔÚ¿ª·¢ÕßÖĞĞÄ¿ÉÒÔ²éÑ¯µ½
+    pd_id           = "103604"     #ç”¨æˆ·ä¸­å¿ƒé¡µå¯ä»¥æŸ¥è¯¢åˆ°pdä¿¡æ¯
+    pd_key          = "/Zea0wnIFe/cIivYNVpu4yjc+p/xEgk" #mark
+    app_id          = "100001"     #å¼€å‘è€…åˆ†æˆç”¨çš„è´¦å·ï¼Œåœ¨å¼€å‘è€…ä¸­å¿ƒå¯ä»¥æŸ¥è¯¢åˆ°
     app_key         = "123456"
-    #Ê¶±ğÀàĞÍ£¬
-    #¾ßÌåÀàĞÍ¿ÉÒÔ²é¿´¹Ù·½ÍøÕ¾µÄ¼Û¸ñÒ³Ñ¡Ôñ¾ßÌåµÄÀàĞÍ£¬²»Çå³şÀàĞÍµÄ£¬¿ÉÒÔ×ÉÑ¯¿Í·ş
+    #è¯†åˆ«ç±»å‹ï¼Œ
+    #å…·ä½“ç±»å‹å¯ä»¥æŸ¥çœ‹å®˜æ–¹ç½‘ç«™çš„ä»·æ ¼é¡µé€‰æ‹©å…·ä½“çš„ç±»å‹ï¼Œä¸æ¸…æ¥šç±»å‹çš„ï¼Œå¯ä»¥å’¨è¯¢å®¢æœ
     pred_type       = "30400"
     api             = FateadmApi(app_id, app_key, pd_id, pd_key)
-    # ²éÑ¯Óà¶î
-    balance 		= api.QueryBalcExtend()   # Ö±½Ó·µÓà¶î
+    # æŸ¥è¯¢ä½™é¢
+    balance 		= api.QueryBalcExtend()   # ç›´æ¥è¿”ä½™é¢
     # api.QueryBalc()
 
-    # Í¨¹ıÎÄ¼şĞÎÊ½Ê¶±ğ£º
+    # é€šè¿‡æ–‡ä»¶å½¢å¼è¯†åˆ«ï¼š
     file_name       = path
-    # result =  api.PredictFromFileExtend(pred_type,file_name)   # Ö±½Ó·µ»ØÊ¶±ğ½á¹û
-    rsp             = api.PredictFromFile(pred_type, file_name)  # ·µ»ØÏêÏ¸Ê¶±ğ½á¹û
+    # result =  api.PredictFromFileExtend(pred_type,file_name)   # ç›´æ¥è¿”å›è¯†åˆ«ç»“æœ
+    rsp             = api.PredictFromFile(pred_type, file_name)  # è¿”å›è¯¦ç»†è¯†åˆ«ç»“æœ
     return rsp.pred_rsp.value
 
 if __name__ == "__main__":
     ip = SelectionIP()
     DOMTree = xml.dom.minidom.parse("inf.xml")
     collection = DOMTree.documentElement
-    print("½âÎöÊ¹ÓÃÃÜÂë...")
+    print("è§£æä½¿ç”¨å¯†ç ...")
     xmlUse = collection.getElementsByTagName("use")[0]
     key = xmlUse.getElementsByTagName("key")[0].childNodes[0].data
     Key(key)
     xmlUser = collection.getElementsByTagName("user")[0]
     studentnumber = xmlUser.getElementsByTagName('username')[0].childNodes[0].data
-    print("ÕËºÅ", studentnumber)
+    print("è´¦å·", studentnumber)
     password = xmlUser.getElementsByTagName('password')[0].childNodes[0].data
     xmlClassNum = collection.getElementsByTagName('classPageNum')[0]
     totalPageNum = xmlClassNum.getElementsByTagName('totalNum')[0].childNodes[0].data
@@ -707,7 +707,7 @@ if __name__ == "__main__":
         sports = xmlClassType.getElementsByTagName('type')[0].childNodes[0].data
         if(sports=="1"):
             Url = CrawlCourse(info[0],info[1],studentnumber,ip,totalPageNum)
-            numListInput = input("ÊäÈë¿Î³ÌĞòÁĞºÅ(ÈçÓĞ¶àÃÅÔòĞèÓÃÓ¢ÎÄ , ¸ô¿ª):")
+            numListInput = input("è¾“å…¥è¯¾ç¨‹åºåˆ—å·(å¦‚æœ‰å¤šé—¨åˆ™éœ€ç”¨è‹±æ–‡ , éš”å¼€):")
             if "," in numListInput:
                 numList = numListInput.split(",")
                 waitSelectList = []
@@ -716,18 +716,18 @@ if __name__ == "__main__":
                     try:
                         timeListNum = PreparaParam(info[0], url)
                     except:
-                        print("²Ù×÷ÓĞÎó£¡´ËÑ¡ÔñºöÂÔ£¡")
+                        print("æ“ä½œæœ‰è¯¯ï¼æ­¤é€‰æ‹©å¿½ç•¥ï¼")
                         timeListNum = None
                     if timeListNum == "s":
-                        print("ÍøÒ³ÈıÃë·ÀË¢..ÖØÊÔ..Èô²»³É¹¦½«ºöÂÔ...")
+                        print("ç½‘é¡µä¸‰ç§’é˜²åˆ·..é‡è¯•..è‹¥ä¸æˆåŠŸå°†å¿½ç•¥...")
                         try:
                             timeListNum = PreparaParam(info[0], url)
                         except:
-                            print("²Ù×÷ÓĞÎó£¡´ËÑ¡ÔñºöÂÔ£¡")
+                            print("æ“ä½œæœ‰è¯¯ï¼æ­¤é€‰æ‹©å¿½ç•¥ï¼")
                             timeListNum = None
                     if timeListNum:
                         waitSelectList.append([url, timeListNum])
-                print("ÊäÈëÍê±Ï,¿ªÊ¼×¼±¸²ÎÊıÁĞ±í...")
+                print("è¾“å…¥å®Œæ¯•,å¼€å§‹å‡†å¤‡å‚æ•°åˆ—è¡¨...")
                 time.sleep(5)
                 threads = []
                 for waitSelectInfo in waitSelectList:
@@ -744,14 +744,14 @@ if __name__ == "__main__":
                 try:
                     timeListNum = PreparaParam(info[0], url)
                 except:
-                    print("²Ù×÷ÓĞÎó£¡´ËÑ¡ÔñºöÂÔ£¡")
+                    print("æ“ä½œæœ‰è¯¯ï¼æ­¤é€‰æ‹©å¿½ç•¥ï¼")
                     timeListNum = None
                 if timeListNum == "s":
-                    print("ÍøÒ³ÈıÃë·ÀË¢..ÖØÊÔ..Èô²»³É¹¦½«ºöÂÔ...")
+                    print("ç½‘é¡µä¸‰ç§’é˜²åˆ·..é‡è¯•..è‹¥ä¸æˆåŠŸå°†å¿½ç•¥...")
                     try:
                         timeListNum = PreparaParam(info[0], url)
                     except:
-                        print("²Ù×÷ÓĞÎó£¡")
+                        print("æ“ä½œæœ‰è¯¯ï¼")
                         timeListNum = None
                 if timeListNum:
                     ExecutePost(info[0], url, timeListNum)
@@ -759,7 +759,7 @@ if __name__ == "__main__":
         elif(sports=="2"):
             CrawlSportsCourse(info[0],info[1],studentnumber,ip)
 
-        else:print("ÊäÈëÎŞĞ§£¡")
-        # select = input("ÊÇ·ñ´òÓ¡µ±Ç°¿Î±í(³Ö¾Ã»¯ÖÁµ±Ç°Ä¿Â¼),ÊÇÔòÊäÈë1:")
+        else:print("è¾“å…¥æ— æ•ˆï¼")
+        # select = input("æ˜¯å¦æ‰“å°å½“å‰è¯¾è¡¨(æŒä¹…åŒ–è‡³å½“å‰ç›®å½•),æ˜¯åˆ™è¾“å…¥1:")
         # if select == "1":
         #     SaveClass(info[0],info[1],studentnumber,ip)
